@@ -23,7 +23,7 @@
 		/// the contents of this method with the code editor.
 		/// </summary>
 		private void InitializeComponent() {
-			System.Windows.Forms.TreeNode treeNode8 = new System.Windows.Forms.TreeNode("Quests");
+			System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Quests");
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
 			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
 			this.treeView1 = new System.Windows.Forms.TreeView();
@@ -60,11 +60,16 @@
 			this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
 			this.pRightPanel = new System.Windows.Forms.Panel();
 			this.cblLocationChoices = new System.Windows.Forms.CheckedListBox();
+			this.flbEventLeft = new System.Windows.Forms.FlowLayoutPanel();
+			this.flbEventRight = new System.Windows.Forms.FlowLayoutPanel();
+			this.label10 = new System.Windows.Forms.Label();
+			this.cbEvent = new System.Windows.Forms.ComboBox();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
 			this.splitContainer1.Panel2.SuspendLayout();
 			this.splitContainer1.SuspendLayout();
 			this.gbLocation.SuspendLayout();
+			this.gbLocationEvents.SuspendLayout();
 			this.gbLocationRequirements.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
 			this.toolStripContainer1.ContentPanel.SuspendLayout();
@@ -86,7 +91,7 @@
 			// splitContainer1.Panel2
 			// 
 			this.splitContainer1.Panel2.Controls.Add(this.pRightPanel);
-			this.splitContainer1.Size = new System.Drawing.Size(1043, 731);
+			this.splitContainer1.Size = new System.Drawing.Size(1043, 764);
 			this.splitContainer1.SplitterDistance = 232;
 			this.splitContainer1.TabIndex = 0;
 			// 
@@ -95,11 +100,11 @@
 			this.treeView1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.treeView1.Location = new System.Drawing.Point(0, 0);
 			this.treeView1.Name = "treeView1";
-			treeNode8.Name = "TreeRoot";
-			treeNode8.Text = "Quests";
+			treeNode3.Name = "TreeRoot";
+			treeNode3.Text = "Quests";
 			this.treeView1.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode8});
-			this.treeView1.Size = new System.Drawing.Size(232, 731);
+            treeNode3});
+			this.treeView1.Size = new System.Drawing.Size(232, 764);
 			this.treeView1.TabIndex = 0;
 			// 
 			// btnRemoveLocation
@@ -132,7 +137,7 @@
 			this.gbLocation.Controls.Add(this.label3);
 			this.gbLocation.Location = new System.Drawing.Point(10, 99);
 			this.gbLocation.Name = "gbLocation";
-			this.gbLocation.Size = new System.Drawing.Size(787, 616);
+			this.gbLocation.Size = new System.Drawing.Size(787, 653);
 			this.gbLocation.TabIndex = 4;
 			this.gbLocation.TabStop = false;
 			this.gbLocation.Text = "Location";
@@ -160,11 +165,12 @@
 			// 
 			this.cbLocationEvents.FormattingEnabled = true;
 			this.cbLocationEvents.Items.AddRange(new object[] {
-            "Add new Event"});
+            "Add new event"});
 			this.cbLocationEvents.Location = new System.Drawing.Point(146, 328);
 			this.cbLocationEvents.Name = "cbLocationEvents";
 			this.cbLocationEvents.Size = new System.Drawing.Size(361, 21);
 			this.cbLocationEvents.TabIndex = 12;
+			this.cbLocationEvents.SelectedIndexChanged += new System.EventHandler(this.cbLocationEvents_SelectedIndexChanged);
 			// 
 			// label8
 			// 
@@ -177,9 +183,13 @@
 			// 
 			// gbLocationEvents
 			// 
+			this.gbLocationEvents.Controls.Add(this.cbEvent);
+			this.gbLocationEvents.Controls.Add(this.label10);
+			this.gbLocationEvents.Controls.Add(this.flbEventRight);
+			this.gbLocationEvents.Controls.Add(this.flbEventLeft);
 			this.gbLocationEvents.Location = new System.Drawing.Point(6, 360);
 			this.gbLocationEvents.Name = "gbLocationEvents";
-			this.gbLocationEvents.Size = new System.Drawing.Size(772, 247);
+			this.gbLocationEvents.Size = new System.Drawing.Size(271, 287);
 			this.gbLocationEvents.TabIndex = 10;
 			this.gbLocationEvents.TabStop = false;
 			this.gbLocationEvents.Text = "Event";
@@ -403,11 +413,11 @@
 			// toolStripContainer1.ContentPanel
 			// 
 			this.toolStripContainer1.ContentPanel.Controls.Add(this.splitContainer1);
-			this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(1043, 731);
+			this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(1043, 764);
 			this.toolStripContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.toolStripContainer1.Location = new System.Drawing.Point(0, 0);
 			this.toolStripContainer1.Name = "toolStripContainer1";
-			this.toolStripContainer1.Size = new System.Drawing.Size(1043, 756);
+			this.toolStripContainer1.Size = new System.Drawing.Size(1043, 789);
 			this.toolStripContainer1.TabIndex = 2;
 			this.toolStripContainer1.Text = "toolStripContainer1";
 			// 
@@ -426,7 +436,7 @@
 			this.pRightPanel.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.pRightPanel.Location = new System.Drawing.Point(0, 0);
 			this.pRightPanel.Name = "pRightPanel";
-			this.pRightPanel.Size = new System.Drawing.Size(807, 731);
+			this.pRightPanel.Size = new System.Drawing.Size(807, 764);
 			this.pRightPanel.TabIndex = 1;
 			// 
 			// cblLocationChoices
@@ -439,11 +449,52 @@
 			this.cblLocationChoices.TabIndex = 14;
 			this.cblLocationChoices.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.cblLocationChoices_ItemCheck);
 			// 
+			// flbEventLeft
+			// 
+			this.flbEventLeft.Location = new System.Drawing.Point(7, 44);
+			this.flbEventLeft.Name = "flbEventLeft";
+			this.flbEventLeft.Size = new System.Drawing.Size(111, 237);
+			this.flbEventLeft.TabIndex = 0;
+			// 
+			// flbEventRight
+			// 
+			this.flbEventRight.Location = new System.Drawing.Point(125, 44);
+			this.flbEventRight.Name = "flbEventRight";
+			this.flbEventRight.Size = new System.Drawing.Size(140, 237);
+			this.flbEventRight.TabIndex = 1;
+			// 
+			// label10
+			// 
+			this.label10.AutoSize = true;
+			this.label10.Location = new System.Drawing.Point(7, 20);
+			this.label10.Name = "label10";
+			this.label10.Size = new System.Drawing.Size(31, 13);
+			this.label10.TabIndex = 2;
+			this.label10.Text = "Type";
+			// 
+			// cbEvent
+			// 
+			this.cbEvent.FormattingEnabled = true;
+			this.cbEvent.Items.AddRange(new object[] {
+            "Add Item",
+            "Remove Item",
+            "Jump",
+            "Add Journal",
+            "Remove Journal",
+            "Add Experience",
+            "Set Flag",
+            "Clear Entry"});
+			this.cbEvent.Location = new System.Drawing.Point(65, 19);
+			this.cbEvent.Name = "cbEvent";
+			this.cbEvent.Size = new System.Drawing.Size(200, 21);
+			this.cbEvent.TabIndex = 3;
+			this.cbEvent.SelectedIndexChanged += new System.EventHandler(this.cbEvent_SelectedIndexChanged);
+			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(1043, 756);
+			this.ClientSize = new System.Drawing.Size(1043, 789);
 			this.Controls.Add(this.toolStripContainer1);
 			this.DoubleBuffered = true;
 			this.Name = "Form1";
@@ -455,6 +506,8 @@
 			this.splitContainer1.ResumeLayout(false);
 			this.gbLocation.ResumeLayout(false);
 			this.gbLocation.PerformLayout();
+			this.gbLocationEvents.ResumeLayout(false);
+			this.gbLocationEvents.PerformLayout();
 			this.gbLocationRequirements.ResumeLayout(false);
 			this.gbLocationRequirements.PerformLayout();
 			this.toolStrip1.ResumeLayout(false);
@@ -507,6 +560,10 @@
 		private System.Windows.Forms.FlowLayoutPanel flbRequirementLeft;
 		private System.Windows.Forms.Panel pRightPanel;
 		private System.Windows.Forms.CheckedListBox cblLocationChoices;
+		private System.Windows.Forms.FlowLayoutPanel flbEventRight;
+		private System.Windows.Forms.FlowLayoutPanel flbEventLeft;
+		private System.Windows.Forms.ComboBox cbEvent;
+		private System.Windows.Forms.Label label10;
 	}
 }
 

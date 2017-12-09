@@ -82,7 +82,6 @@ namespace QuestEditor {
 				Requirements=new Dictionary<string, object>[] { item };
 			}
 		}
-
 		public void removeRequirement(int pos) {
 			if (Requirements==null) return;
 			if (Requirements.Length>1) {
@@ -100,6 +99,38 @@ namespace QuestEditor {
 				Requirements=reqs;
 			} else {
 				Requirements=null;
+			}
+		}
+
+		public void addEvent(Dictionary<string, object> item) {
+			if (Events!=null) {
+				Dictionary<string, object>[] evs = new Dictionary<string, object>[Events.Length+1];
+				for (int i = 0; i<Events.Length; i++) {
+					evs[i]=Events[i];
+				}
+				evs[evs.Length-1]=item;
+				Events=evs;
+			} else {
+				Events=new Dictionary<string, object>[] { item };
+			}
+		}
+		public void removeEvent(int pos) {
+			if (Events==null) return;
+			if (Events.Length>1) {
+				Dictionary<string, object>[] evs = new Dictionary<string, object>[Events.Length-1];
+				bool passed = false;
+				for (int i = 0; i<Events.Length; i++) {
+					if (i==pos) {
+						passed=true;
+						continue;
+					} else {
+						if (passed) evs[i-1]=Requirements[i];
+						else evs[i]=Requirements[i];
+					}
+				}
+				Events=evs;
+			} else {
+				Events=null;
 			}
 		}
 	}

@@ -397,6 +397,221 @@ namespace QuestEditor {
 
 		#endregion
 
+		#region Event
+
+		Dictionary<string, Control> EventControls = new Dictionary<string, Control>();
+		string currentEventType;
+		int currentEvent;
+		private void cbLocationEvents_SelectedIndexChanged(object sender, EventArgs e) {
+			saveEvent();
+			clearEvent();
+			currentEventType=null;
+			cbEvent.Text="";
+			cbEvent.SelectedItem=null;
+			if (cbLocationEvents.Text=="Add new event") {
+				string s;
+				if (currentLocation.Events!=null) {
+					s="Event "+(currentLocation.Events.Length+1);
+					currentEvent=currentLocation.Events.Length;
+				} else {
+					s="Event 1";
+					currentEvent=0;
+				}
+				cbLocationEvents.Items.Add(s);
+				currentEntry.Locations[currentLoc].addEvent(new Dictionary<string, object>());
+				cbLocationEvents.SelectedItem=cbLocationEvents.Items[cbLocationEvents.Items.IndexOf(s)];
+			} else {
+				currentEvent=cbLocationEvents.Items.IndexOf(cbLocationEvents.Text)-1;
+				populateEvent();
+				gbLocationEvents.Show();
+			}
+		}
+
+		readonly string[] AJItem = new string[] { "name", "description", "item", "total", "ordering", "owner", "name", "label" };
+		private void saveEvent() {
+			if (currentEventType==null) return;
+			Dictionary<string, object> ev = new Dictionary<string, object>();
+			try {
+				switch (currentEventType) {
+					case ("Add Item"):
+						ev["type"]="add item";
+						ev["item"]=((TextBox)EventControls["item"]).Text;
+						ev["count"]=((TextBox)EventControls["count"]).Text;
+						break;
+					case ("Remove Item"):
+						ev["type"]="remove item";
+						ev["item"]=((TextBox)EventControls["item"]).Text;
+						ev["count"]=((TextBox)EventControls["count"]).Text;
+						break;
+					case ("Jump"):
+						ev["type"]="jump";
+						ev["label"]=((TextBox)EventControls["label"]).Text;
+						break;
+					case ("Add Journal"):
+						ev["type"]="add journal";
+						for (int i = 0; i<AJItem.Length; i++) {
+							ev[AJItem[i]]=((TextBox)EventControls[AJItem[i]]).Text;
+						}
+						ev["progress type"]=((ComboBox)EventControls["progress type"]).SelectedIndex;
+						break;
+					case ("Remove Journal"):
+						ev["type"]="remove journal";
+						ev["owner"]=((TextBox)EventControls["owner"]).Text;
+						ev["name"]=((TextBox)EventControls["name"]).Text;
+						break;
+					case ("Add Experience"):
+						ev["type"]="add experience";
+						ev["skill"]=((TextBox)EventControls["skill"]).Text;
+						ev["count"]=((TextBox)EventControls["count"]).Text;
+						break;
+					case ("Set Flag"):
+						ev["type"]="set flag";
+						ev["owner"]=((TextBox)EventControls["owner"]).Text;
+						ev["flag"]=((TextBox)EventControls["flag"]).Text;
+						ev["value"]=((TextBox)EventControls["value"]).Text;
+						break;
+					case ("Clear Entry"):
+						ev["type"]="clear entry";
+						break;
+				}
+			} catch (KeyNotFoundException) { }
+
+			if (currentEntry.Locations[currentLoc].Events!=null) {
+				currentEntry.Locations[currentLoc].Events[currentEvent]=ev;
+			} else {
+				currentEntry.Locations[currentLoc].addEvent(ev);
+			}
+		}
+
+		private void clearEvent() {
+			foreach (Control c in EventControls.Values) {
+				c.Dispose();
+			}
+			currentEventType=null;
+		}
+
+		private void populateEvent() {
+			if (currentLocation.Events==null) return;
+			if (!currentLocation.Events[currentEvent].ContainsKey("type")) return;
+			string typeLower = currentLocation.Events[currentEvent]["type"].ToString();
+			string typeUpper = "";
+			try {
+				switch (typeLower) {
+					case ("add item"):
+						typeUpper="Add Item";
+						cbEvent.SelectedItem=cbEvent.Items[cbEvent.Items.IndexOf(typeUpper)];
+						EventControls["count"].Text=currentLocation.Events[currentEvent]["count"].ToString();
+						EventControls["item"].Text=currentLocation.Events[currentEvent]["item"].ToString();
+						break;
+					case ("remove item"):
+						typeUpper="Remove Item";
+						cbEvent.SelectedItem=cbEvent.Items[cbEvent.Items.IndexOf(typeUpper)];
+						EventControls["item"].Text=currentLocation.Events[currentEvent]["item"].ToString();
+						EventControls["count"].Text=currentLocation.Events[currentEvent]["count"].ToString();
+						break;
+					case ("jump"):
+						typeUpper="Jump";
+						cbEvent.SelectedItem=cbEvent.Items[cbEvent.Items.IndexOf(typeUpper)];
+						EventControls["label"].Text=currentLocation.Events[currentEvent]["label"].ToString();
+						break;
+					case ("add journal"):
+						typeUpper="Add Journal";
+						cbEvent.SelectedItem=cbEvent.Items[cbEvent.Items.IndexOf(typeUpper)];
+						for (int i = 0; i<AJItem.Length; i++) {
+							EventControls[AJItem[i]].Text=currentLocation.Events[currentEvent][AJItem[i]].ToString();
+						}
+							((ComboBox)EventControls["progress type"]).SelectedItem=((ComboBox)EventControls["progress type"]).Items[((ComboBox)EventControls["progress type"]).Items.IndexOf(currentLocation.Events[currentEvent]["progress type"].ToString())];
+						((ComboBox)EventControls["owner"]).SelectedItem=((ComboBox)EventControls["owner"]).Items[((ComboBox)EventControls["owner"]).Items.IndexOf(currentLocation.Events[currentEvent]["owner"].ToString())];
+						break;
+					case ("remove journal"):
+						typeUpper="Remove Journal";
+						cbEvent.SelectedItem=cbEvent.Items[cbEvent.Items.IndexOf(typeUpper)];
+						EventControls["name"].Text=currentLocation.Events[currentEvent]["name"].ToString();
+						((ComboBox)EventControls["owner"]).SelectedItem=((ComboBox)EventControls["owner"]).Items[((ComboBox)EventControls["owner"]).Items.IndexOf(currentLocation.Events[currentEvent]["owner"].ToString())];
+						break;
+					case ("add experience"):
+						typeUpper="Add Experience";
+						cbEvent.SelectedItem=cbEvent.Items[cbEvent.Items.IndexOf(typeUpper)];
+						EventControls["skill"].Text=currentLocation.Events[currentEvent]["skill"].ToString();
+						EventControls["count"].Text=currentLocation.Events[currentEvent]["count"].ToString();
+						break;
+					case ("set flag"):
+						typeUpper="Set Flag";
+						cbEvent.SelectedItem=cbEvent.Items[cbEvent.Items.IndexOf(typeUpper)];
+						((ComboBox)EventControls["owner"]).SelectedItem=((ComboBox)EventControls["owner"]).Items[((ComboBox)EventControls["owner"]).Items.IndexOf(currentLocation.Events[currentEvent]["owner"].ToString())];
+						EventControls["flag"].Text=currentLocation.Events[currentEvent]["flag"].ToString();
+						EventControls["value"].Text=currentLocation.Events[currentEvent]["value"].ToString();
+						break;
+					case ("clear entry"):
+						typeUpper="Clear Entry";
+						cbEvent.SelectedItem=cbEvent.Items[cbEvent.Items.IndexOf(typeUpper)];
+						break;
+				}
+			} catch (Exception) {}
+		}
+
+		const int labelHeight = 27;
+		private void cbEvent_SelectedIndexChanged(object sender, EventArgs e) {
+			clearEvent();
+			currentEventType=cbEvent.Text;
+			EventControls=new Dictionary<string, Control>();
+			switch (currentEventType) {
+				case("Add Item"):
+				case ("Remove Item"):
+					EventControls.Add("item", new TextBox() { Parent=flbEventRight });
+					EventControls.Add("itemL", new Label() { Parent=flbEventLeft, Text="Item", Size=new Size(100, labelHeight) });
+					EventControls.Add("count", new TextBox() { Parent=flbEventRight });
+					EventControls.Add("countL", new Label() { Parent=flbEventLeft, Text="Count", Size=new Size(100, labelHeight) });
+					break;
+				case ("Jump"):
+					EventControls.Add("label", new TextBox() { Parent=flbEventRight});
+					EventControls.Add("labelL", new Label() { Parent=flbEventLeft, Text="Label", Size=new Size(100, labelHeight) });
+					break;
+				case ("Add Journal"):
+					EventControls.Add("description", new TextBox() { Parent=flbEventRight });
+					EventControls.Add("descriptionL", new Label() { Parent=flbEventLeft, Text="Description", Size=new Size(100, labelHeight) });
+					EventControls.Add("item", new TextBox() { Parent=flbEventRight });
+					EventControls.Add("itemL", new Label() { Parent=flbEventLeft, Text="Item/Catagory", Size=new Size(100, labelHeight) });
+					EventControls.Add("total", new TextBox() { Parent=flbEventRight });
+					EventControls.Add("totalL", new Label() { Parent=flbEventLeft, Text="Total", Size=new Size(100, labelHeight) });
+					EventControls.Add("ordering", new TextBox() { Parent=flbEventRight });
+					EventControls.Add("orderingL", new Label() { Parent=flbEventLeft, Text="Ordering", Size=new Size(100, labelHeight) });
+					ComboBox t3 = new ComboBox() { Parent=flbEventRight };
+					t3.Items.AddRange(new string[] { "Item", "Item Catagory" });
+					EventControls.Add("progress type", t3);
+					EventControls.Add("progress typeL", new Label() { Parent=flbEventLeft, Text="Progress Type", Size=new Size(100, labelHeight) });
+					goto case "Remove Journal";
+				case ("Remove Journal"):
+					EventControls.Add("name", new TextBox() { Parent=flbEventRight });
+					EventControls.Add("nameL", new Label() { Parent=flbEventLeft, Text="Name", Size=new Size(100, labelHeight) });
+					ComboBox t1 = new ComboBox() { Parent=flbEventRight };
+					t1.Items.AddRange(new string[] { "Player", "Guild" });
+					EventControls.Add("owner", t1);
+					EventControls.Add("ownerL", new Label() { Parent=flbEventLeft, Text="Owner", Size=new Size(100, labelHeight) });
+					break;
+				case ("Add Experience"):
+					EventControls.Add("skill", new TextBox() { Parent=flbEventRight });
+					EventControls.Add("skillL", new Label() { Parent=flbEventLeft, Text="Skill", Size=new Size(100, labelHeight) });
+					EventControls.Add("count", new TextBox() { Parent=flbEventRight });
+					EventControls.Add("countL", new Label() { Parent=flbEventLeft, Text="Count", Size=new Size(100, labelHeight) });
+					break;
+				case ("Set Flag"):
+					EventControls.Add("flag", new TextBox() { Parent=flbEventRight });
+					EventControls.Add("flagL", new Label() { Parent=flbEventLeft, Text="Flag", Size=new Size(100, labelHeight) });
+					EventControls.Add("value", new TextBox() { Parent=flbEventRight });
+					EventControls.Add("valueL", new Label() { Parent=flbEventLeft, Text="Value", Size=new Size(100, labelHeight) });
+					ComboBox t2 = new ComboBox() { Parent=flbEventRight };
+					t2.Items.AddRange(new string[] { "Player", "Guild" });
+					EventControls.Add("owner", t2);
+					EventControls.Add("ownerL", new Label() { Parent=flbEventLeft, Text="Owner", Size=new Size(100, labelHeight) });
+					break;
+				case ("Clear Entry"):
+					break;
+			}
+		}
+
+		#endregion
+
 		private void tbLocationDescription_TextChanged(object sender, EventArgs e) {
 			if (currentEntry.Locations!=null) {
 				currentEntry.Locations[currentLoc].Description=tbLocationDescription.Text;
@@ -404,6 +619,5 @@ namespace QuestEditor {
 		}
 
 		#endregion
-
 	}
 }
