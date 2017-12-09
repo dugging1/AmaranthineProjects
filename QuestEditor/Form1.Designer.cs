@@ -23,7 +23,7 @@
 		/// the contents of this method with the code editor.
 		/// </summary>
 		private void InitializeComponent() {
-			System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Quests");
+			System.Windows.Forms.TreeNode treeNode8 = new System.Windows.Forms.TreeNode("Quests");
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
 			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
 			this.treeView1 = new System.Windows.Forms.TreeView();
@@ -95,10 +95,10 @@
 			this.treeView1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.treeView1.Location = new System.Drawing.Point(0, 0);
 			this.treeView1.Name = "treeView1";
-			treeNode3.Name = "TreeRoot";
-			treeNode3.Text = "Quests";
+			treeNode8.Name = "TreeRoot";
+			treeNode8.Text = "Quests";
 			this.treeView1.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode3});
+            treeNode8});
 			this.treeView1.Size = new System.Drawing.Size(232, 731);
 			this.treeView1.TabIndex = 0;
 			// 
@@ -276,9 +276,9 @@
 			this.label7.AutoSize = true;
 			this.label7.Location = new System.Drawing.Point(16, 180);
 			this.label7.Name = "label7";
-			this.label7.Size = new System.Drawing.Size(45, 13);
+			this.label7.Size = new System.Drawing.Size(123, 13);
 			this.label7.TabIndex = 4;
-			this.label7.Text = "Choices";
+			this.label7.Text = "Choices (Uses locations)";
 			// 
 			// label6
 			// 
@@ -434,8 +434,10 @@
 			this.cblLocationChoices.FormattingEnabled = true;
 			this.cblLocationChoices.Location = new System.Drawing.Point(146, 180);
 			this.cblLocationChoices.Name = "cblLocationChoices";
+			this.cblLocationChoices.ScrollAlwaysVisible = true;
 			this.cblLocationChoices.Size = new System.Drawing.Size(361, 94);
 			this.cblLocationChoices.TabIndex = 14;
+			this.cblLocationChoices.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.cblLocationChoices_ItemCheck);
 			// 
 			// Form1
 			// 

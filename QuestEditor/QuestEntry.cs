@@ -63,8 +63,11 @@ namespace QuestEditor {
 		public string Label { get; set; } //Shown name
 		public Dictionary<string,object>[] Requirements { get; set; }
 		public string Description { get; set; }
+		public Dictionary<string, object>[] Events { get; set; }
+		[JsonProperty(PropertyName ="Choices")]
 		public List<QuestChoicesEntry> TrueChoices { get; set; }
 
+		[JsonIgnore()]
 		public List<JObject> Choices { get; set; }
 
 		public void addRequirement(Dictionary<string, object> item) {
@@ -104,8 +107,8 @@ namespace QuestEditor {
 	internal struct QuestChoicesEntry {
 		public string Label { get; set; }
 		public string Description { get; set; }
-		public QuestChoicesEntry[] Choices { get; set; }
-		public Dictionary<string, string>[] Requirements { get; set; }
-		public Dictionary<string, string>[] Events { get; set; }
+		public List<QuestChoicesEntry> Choices { get; set; }
+		public Dictionary<string, object>[] Requirements { get; set; }
+		public Dictionary<string, object>[] Events { get; set; }
 	}
 }

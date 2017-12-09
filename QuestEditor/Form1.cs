@@ -55,6 +55,7 @@ namespace QuestEditor {
 				gbLocation.Text="Location: "+cbQuestLocations.Text;
 				gbLocation.Show();
 			}
+			populateChoicesBox();
 		}
 
 		private void populateFields() {
@@ -352,6 +353,50 @@ namespace QuestEditor {
 
 		#endregion
 
+		#region Choices
+
+		private void cblLocationChoices_ItemCheck(object sender, ItemCheckEventArgs e) {
+			for (int j = 0; j<cblLocationChoices.Items.Count; j++) {
+				QuestLocationEntry q = new QuestLocationEntry();
+				string name = cblLocationChoices.Items[j].ToString();
+				for (int i = 0; i<currentEntry.Locations.Length; i++) {
+					if (convertToTitle(currentEntry.Locations[i].Name, currentEntry.Locations[i].Label)==name) {
+						q=currentEntry.Locations[i];
+						break;
+					}
+				}
+				QuestChoicesEntry choicesEntry = new QuestChoicesEntry() {
+					Description=q.Description,
+					Label=q.Label,
+					Requirements=q.Requirements,
+					Choices=q.TrueChoices,
+					Events=q.Events
+				};
+				bool isChecked = cblLocationChoices.GetItemChecked(cblLocationChoices.Items.IndexOf(name));
+				if(currentEntry.Locations[currentLoc].TrueChoices == null) currentEntry.Locations[currentLoc].TrueChoices=new List<QuestChoicesEntry>();
+				if (!isChecked && !currentEntry.Locations[currentLoc].TrueChoices.Contains(choicesEntry)) currentEntry.Locations[currentLoc].TrueChoices.Add(choicesEntry);
+				else if(isChecked &&currentEntry.Locations[currentLoc].TrueChoices.Contains(choicesEntry)) currentEntry.Locations[currentLoc].TrueChoices.Remove(choicesEntry);
+			}
+		}
+
+		private void populateChoicesBox() {
+			cblLocationChoices.Items.Clear();
+			if (currentEntry.Locations==null) return;
+			for (int i = 0; i<currentEntry.Locations.Length; i++) {
+				if (i==currentLoc) continue;
+				string name = convertToTitle(currentEntry.Locations[i].Name, currentEntry.Locations[i].Label);
+				cblLocationChoices.Items.Add(name);
+				if (currentEntry.Locations[currentLoc].TrueChoices==null) continue;
+				for (int j = 0; j<currentEntry.Locations[currentLoc].TrueChoices.Count; j++) {
+					if (currentEntry.Locations[i].Label==currentEntry.Locations[currentLoc].TrueChoices[j].Label) {
+						cblLocationChoices.SetItemChecked(cblLocationChoices.Items.IndexOf(name), true);
+					}
+				}
+			}
+		}
+
+		#endregion
+
 		private void tbLocationDescription_TextChanged(object sender, EventArgs e) {
 			if (currentEntry.Locations!=null) {
 				currentEntry.Locations[currentLoc].Description=tbLocationDescription.Text;
@@ -359,5 +404,6 @@ namespace QuestEditor {
 		}
 
 		#endregion
+
 	}
 }
