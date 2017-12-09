@@ -25,6 +25,26 @@ namespace QuestEditor {
 			}
 		}
 
+		public void removeLocation(int pos) {
+			if (Locations==null) return;
+			if (Locations.Length>1) {
+				QuestLocationEntry[] Locs = new QuestLocationEntry[Locations.Length-1];
+				bool passed = false;
+				for (int i = 0; i<Locations.Length; i++) {
+					if (i==pos) {
+						passed=true;
+						continue;
+					} else {
+						if (passed) Locs[i-1]=Locations[i];
+						else Locs[i]=Locations[i];
+					}
+				}
+				Locations=Locs;
+			} else {
+				Locations=null;
+			}
+		}
+
 		public static QuestEntry DecodeJson(string json) {
 			QuestEntry s = JsonConvert.DeserializeObject<QuestEntry>(json);
 
@@ -41,11 +61,44 @@ namespace QuestEditor {
 	internal struct QuestLocationEntry {
 		public string Name { get; set; } //Internal name
 		public string Label { get; set; } //Shown name
-		public Dictionary<string,string>[] Requirements { get; set; }
+		public Dictionary<string,object>[] Requirements { get; set; }
 		public string Description { get; set; }
 		public List<QuestChoicesEntry> TrueChoices { get; set; }
 
 		public List<JObject> Choices { get; set; }
+
+		public void addRequirement(Dictionary<string, object> item) {
+			if (Requirements!=null) {
+				Dictionary<string, object>[] Requires = new Dictionary<string, object>[Requirements.Length+1];
+				for (int i = 0; i<Requirements.Length; i++) {
+					Requires[i]=Requirements[i];
+				}
+				Requires[Requires.Length-1]=item;
+				Requirements=Requires;
+			} else {
+				Requirements=new Dictionary<string, object>[] { item };
+			}
+		}
+
+		public void removeRequirement(int pos) {
+			if (Requirements==null) return;
+			if (Requirements.Length>1) {
+				Dictionary<string, object>[] reqs = new Dictionary<string, object>[Requirements.Length-1];
+				bool passed = false;
+				for (int i = 0; i<Requirements.Length; i++) {
+					if (i==pos) {
+						passed=true;
+						continue;
+					} else {
+						if (passed) reqs[i-1]=Requirements[i];
+						else reqs[i]=Requirements[i];
+					}
+				}
+				Requirements=reqs;
+			} else {
+				Requirements=null;
+			}
+		}
 	}
 
 	internal struct QuestChoicesEntry {
