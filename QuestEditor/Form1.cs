@@ -13,6 +13,7 @@ using Newtonsoft.Json.Linq;
 namespace QuestEditor {
 	public partial class Form1 : Form {
 		private List<QuestEntry> Quests = new List<QuestEntry>();
+		private int currentEnt = 0;
 		private QuestEntry currentEntry = new QuestEntry();
 		private int currentLoc;
 		private QuestLocationEntry currentLocation { get { return currentEntry.Locations[currentLoc]; } set { currentEntry.addLocation(value); } }
@@ -22,10 +23,13 @@ namespace QuestEditor {
 		}
 
 		private void Form1_Load(object sender, EventArgs e) {
+			pRightPanel.Hide();
 			gbLocationEvents.Hide();
 			gbLocationRequirements.Hide();
 			gbLocation.Hide();
+			QuestTree.NodeMouseDoubleClick+=QuestTree_NodeMouseDoubleClick;
 		}
+
 
 		#region RightPanelQuestEditor
 
@@ -152,6 +156,7 @@ namespace QuestEditor {
 		}
 
 		private void populateRequirement() {
+			if (currentEntry.Locations==null) return;
 			if (!currentLocation.Requirements[currentRequirement].ContainsKey("type")) return;
 			string typeLower = currentLocation.Requirements[currentRequirement]["type"].ToString();
 			string typeUpper;
@@ -491,6 +496,7 @@ namespace QuestEditor {
 		}
 
 		private void populateEvent() {
+			if (currentEntry.Locations==null) return;
 			if (currentLocation.Events==null) return;
 			if (!currentLocation.Events[currentEvent].ContainsKey("type")) return;
 			string typeLower = currentLocation.Events[currentEvent]["type"].ToString();
@@ -616,6 +622,54 @@ namespace QuestEditor {
 			if (currentEntry.Locations!=null) {
 				currentEntry.Locations[currentLoc].Description=tbLocationDescription.Text;
 			}
+		}
+
+		string oldQuestName;
+		private void tbQuestLabel_TextChanged(object sender, EventArgs e) {
+			if (oldQuestName==null) oldQuestName="New Quest 1";
+			foreach (TreeNode t in QuestTree.Nodes[0].Nodes) {
+				if (t.Text==oldQuestName) {
+					t.Text=tbQuestLabel.Text;
+				}
+			}
+			currentEntry.Label=tbQuestLabel.Text;
+			oldQuestName=tbQuestLabel.Text;
+		}
+
+		#endregion
+
+
+		#region LeftPanelQuestEditor
+
+		private void QuestTree_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e) {
+			string name = e.Node.ToString().Substring(10);
+			for (int i = 0; i<Quests.Count; i++) {
+				if(Quests[i].Label ==name) {
+					currentEntry=Quests[i];
+					oldQuestName=currentEntry.Label;
+					pRightPanel.Show();
+					populateRightPanel();
+					break;
+				}
+			}
+		}
+
+		private void populateRightPanel() {
+			tbQuestLabel.Text=currentEntry.Label;
+			populateFields();
+			populateChoicesBox();
+			populateEvent();
+			populateRequirement();
+		}
+
+		#endregion
+
+		#region ToolBar
+
+		private void btnNewQueset_Click(object sender, EventArgs E) {
+			QuestEntry e = new QuestEntry() { Label="New Quest "+(Quests.Count+1) };
+			Quests.Add(e);
+			QuestTree.Nodes[0].Nodes.Add(e.Label);
 		}
 
 		#endregion

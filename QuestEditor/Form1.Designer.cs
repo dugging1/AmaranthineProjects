@@ -26,7 +26,7 @@
 			System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Quests");
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
 			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-			this.treeView1 = new System.Windows.Forms.TreeView();
+			this.QuestTree = new System.Windows.Forms.TreeView();
 			this.btnRemoveLocation = new System.Windows.Forms.Button();
 			this.gbLocation = new System.Windows.Forms.GroupBox();
 			this.btnLocationRemoveEvent = new System.Windows.Forms.Button();
@@ -86,7 +86,7 @@
 			// 
 			// splitContainer1.Panel1
 			// 
-			this.splitContainer1.Panel1.Controls.Add(this.treeView1);
+			this.splitContainer1.Panel1.Controls.Add(this.QuestTree);
 			// 
 			// splitContainer1.Panel2
 			// 
@@ -95,17 +95,17 @@
 			this.splitContainer1.SplitterDistance = 232;
 			this.splitContainer1.TabIndex = 0;
 			// 
-			// treeView1
+			// QuestTree
 			// 
-			this.treeView1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.treeView1.Location = new System.Drawing.Point(0, 0);
-			this.treeView1.Name = "treeView1";
+			this.QuestTree.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.QuestTree.Location = new System.Drawing.Point(0, 0);
+			this.QuestTree.Name = "QuestTree";
 			treeNode3.Name = "TreeRoot";
 			treeNode3.Text = "Quests";
-			this.treeView1.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
+			this.QuestTree.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
             treeNode3});
-			this.treeView1.Size = new System.Drawing.Size(232, 764);
-			this.treeView1.TabIndex = 0;
+			this.QuestTree.Size = new System.Drawing.Size(232, 764);
+			this.QuestTree.TabIndex = 0;
 			// 
 			// btnRemoveLocation
 			// 
@@ -352,6 +352,7 @@
 			this.tbQuestLabel.Name = "tbQuestLabel";
 			this.tbQuestLabel.Size = new System.Drawing.Size(361, 20);
 			this.tbQuestLabel.TabIndex = 1;
+			this.tbQuestLabel.TextChanged += new System.EventHandler(this.tbQuestLabel_TextChanged);
 			// 
 			// label1
 			// 
@@ -406,6 +407,7 @@
 			this.btnNewQueset.Name = "btnNewQueset";
 			this.btnNewQueset.Size = new System.Drawing.Size(69, 22);
 			this.btnNewQueset.Text = "New Quest";
+			this.btnNewQueset.Click += new System.EventHandler(this.btnNewQueset_Click);
 			// 
 			// toolStripContainer1
 			// 
@@ -526,7 +528,7 @@
 		#endregion
 
 		private System.Windows.Forms.SplitContainer splitContainer1;
-		private System.Windows.Forms.TreeView treeView1;
+		private System.Windows.Forms.TreeView QuestTree;
 		private System.Windows.Forms.ToolStrip toolStrip1;
 		private System.Windows.Forms.ToolStripButton btnNewQueset;
 		private System.Windows.Forms.ToolStripContainer toolStripContainer1;
