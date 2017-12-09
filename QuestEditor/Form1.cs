@@ -12,11 +12,10 @@ using Newtonsoft.Json.Linq;
 
 namespace QuestEditor {
 	public partial class Form1 : Form {
-		private List<QuestEntry> Quests = new List<QuestEntry>();
+		private QuestEntry[] Quests;
 		private int currentEnt = 0;
-		private QuestEntry currentEntry = new QuestEntry();
 		private int currentLoc;
-		private QuestLocationEntry currentLocation { get { return currentEntry.Locations[currentLoc]; } set { currentEntry.addLocation(value); } }
+		private QuestLocationEntry currentLocation { get { return Quests[currentEnt].Locations[currentLoc]; } }
 
 		public Form1() {
 			InitializeComponent();
@@ -30,6 +29,22 @@ namespace QuestEditor {
 			QuestTree.NodeMouseDoubleClick+=QuestTree_NodeMouseDoubleClick;
 		}
 
+		private void addQuest(QuestEntry item) {
+			if (Quests!=null) {
+				QuestEntry[] q = new QuestEntry[Quests.Length+1];
+				for (int i = 0; i<Quests.Length; i++) {
+					q[i]=Quests[i];
+				}
+				q[q.Length-1]=item;
+				Quests=q;
+			} else {
+				Quests=new QuestEntry[] { item };
+			}
+		}
+		private void removeQuest(int pos) {
+			
+		}
+
 
 		#region RightPanelQuestEditor
 
@@ -38,14 +53,14 @@ namespace QuestEditor {
 		private void cbQuestLocations_SelectedIndexChanged(object sender, EventArgs e) {
 			if (cbQuestLocations.Text=="Add new location") {
 				tbLocationName.Text="New Quest";
-				currentLocation=new QuestLocationEntry();
-				currentLoc=currentEntry.Locations.Length-1;
-				currentEntry.Locations[currentLoc].Name="New Quest";
+				Quests[currentEnt].addLocation(new QuestLocationEntry());
+				currentLoc=Quests[currentEnt].Locations.Length-1;
+				Quests[currentEnt].Locations[currentLoc].Name="New Quest";
 				populateFields();
 			} else {
-				if (currentEntry.Locations!=null) {
-					for (int i = 0; i<currentEntry.Locations.Length; i++) {
-						if (convertToTitle(currentEntry.Locations[i].Name, currentEntry.Locations[i].Label)==cbQuestLocations.Text) {
+				if (Quests[currentEnt].Locations!=null) {
+					for (int i = 0; i<Quests[currentEnt].Locations.Length; i++) {
+						if (convertToTitle(Quests[currentEnt].Locations[i].Name, Quests[currentEnt].Locations[i].Label)==cbQuestLocations.Text) {
 							currentLoc=i;
 							populateFields();
 							break;
@@ -63,7 +78,7 @@ namespace QuestEditor {
 		}
 
 		private void populateFields() {
-			if (currentEntry.Locations!=null) {
+			if (Quests[currentEnt].Locations!=null) {
 				tbLocationDescription.Text=currentLocation.Description;
 				tbLocationLabel.Text=currentLocation.Label;
 				tbLocationName.Text=currentLocation.Name;
@@ -80,7 +95,7 @@ namespace QuestEditor {
 		}
 
 		private string getOldStr() {
-			if (currentEntry.Locations!=null) {
+			if (Quests[currentEnt].Locations!=null) {
 				string n = currentLocation.Name;
 				string l = currentLocation.Label;
 				if (n==null) n="";
@@ -93,15 +108,15 @@ namespace QuestEditor {
 
 		private void tbLocationName_TextChanged(object sender, EventArgs e) {
 			string oldStr = getOldStr();
-			if (currentEntry.Locations!=null) {
-				currentEntry.Locations[currentLoc].Name=tbLocationName.Text;
+			if (Quests[currentEnt].Locations!=null) {
+				Quests[currentEnt].Locations[currentLoc].Name=tbLocationName.Text;
 			}
 			updateLocationDDText(oldStr);
 		}
 		private void tbLocationLabel_TextChanged(object sender, EventArgs e) {
 			string oldStr = getOldStr();
-			if (currentEntry.Locations!=null) {
-				currentEntry.Locations[currentLoc].Label=tbLocationLabel.Text;
+			if (Quests[currentEnt].Locations!=null) {
+				Quests[currentEnt].Locations[currentLoc].Label=tbLocationLabel.Text;
 			}
 			updateLocationDDText(oldStr);
 		}
@@ -113,9 +128,9 @@ namespace QuestEditor {
 
 		private void btnRemoveLocation_Click(object sender, EventArgs e) {
 			cbQuestLocations.Items.Remove(getOldStr());
-			currentEntry.removeLocation(currentLoc);
+			Quests[currentEnt].removeLocation(currentLoc);
 			currentLoc=0;
-			if (currentEntry.Locations!=null) {
+			if (Quests[currentEnt].Locations!=null) {
 				cbQuestLocations.SelectedItem=cbQuestLocations.Items[cbQuestLocations.Items.IndexOf(getOldStr())];
 				populateFields();
 			} else {
@@ -146,7 +161,7 @@ namespace QuestEditor {
 					cbLocationRequirements.Items.Add(s);
 					currentRequirement=0;
 				}
-				currentEntry.Locations[currentLoc].addRequirement(new Dictionary<string, object>());
+				Quests[currentEnt].Locations[currentLoc].addRequirement(new Dictionary<string, object>());
 				cbLocationRequirements.SelectedItem=cbLocationRequirements.Items[cbLocationRequirements.Items.IndexOf(s)];
 			} else {
 				currentRequirement=cbLocationRequirements.Items.IndexOf(cbLocationRequirements.Text)-1;
@@ -156,7 +171,8 @@ namespace QuestEditor {
 		}
 
 		private void populateRequirement() {
-			if (currentEntry.Locations==null) return;
+			if (Quests[currentEnt].Locations==null) return;
+			if (Quests[currentEnt].Locations[currentLoc].Requirements==null) return;
 			if (!currentLocation.Requirements[currentRequirement].ContainsKey("type")) return;
 			string typeLower = currentLocation.Requirements[currentRequirement]["type"].ToString();
 			string typeUpper;
@@ -336,16 +352,16 @@ namespace QuestEditor {
 				}
 			} catch (Exception) {}
 
-			if (currentEntry.Locations[currentLoc].Requirements!=null) {
-				currentEntry.Locations[currentLoc].Requirements[currentRequirement]=require;
+			if (Quests[currentEnt].Locations[currentLoc].Requirements!=null) {
+				Quests[currentEnt].Locations[currentLoc].Requirements[currentRequirement]=require;
 			} else {
-				currentEntry.Locations[currentLoc].addRequirement(require);
+				Quests[currentEnt].Locations[currentLoc].addRequirement(require);
 			}
 		}
 
 		private void btnLocationRemoveRequirement_Click(object sender, EventArgs e) {
 			if (currentLocation.Requirements==null) return;
-			currentEntry.Locations[currentLoc].removeRequirement(currentRequirement);
+			Quests[currentEnt].Locations[currentLoc].removeRequirement(currentRequirement);
 			cbLocationRequirements.Items.Remove("Requirement "+(currentRequirement+1));
 			clearRequirement();
 			currentRequirement=0;
@@ -364,9 +380,9 @@ namespace QuestEditor {
 			for (int j = 0; j<cblLocationChoices.Items.Count; j++) {
 				QuestLocationEntry q = new QuestLocationEntry();
 				string name = cblLocationChoices.Items[j].ToString();
-				for (int i = 0; i<currentEntry.Locations.Length; i++) {
-					if (convertToTitle(currentEntry.Locations[i].Name, currentEntry.Locations[i].Label)==name) {
-						q=currentEntry.Locations[i];
+				for (int i = 0; i<Quests[currentEnt].Locations.Length; i++) {
+					if (convertToTitle(Quests[currentEnt].Locations[i].Name, Quests[currentEnt].Locations[i].Label)==name) {
+						q=Quests[currentEnt].Locations[i];
 						break;
 					}
 				}
@@ -378,22 +394,22 @@ namespace QuestEditor {
 					Events=q.Events
 				};
 				bool isChecked = cblLocationChoices.GetItemChecked(cblLocationChoices.Items.IndexOf(name));
-				if(currentEntry.Locations[currentLoc].TrueChoices == null) currentEntry.Locations[currentLoc].TrueChoices=new List<QuestChoicesEntry>();
-				if (!isChecked && !currentEntry.Locations[currentLoc].TrueChoices.Contains(choicesEntry)) currentEntry.Locations[currentLoc].TrueChoices.Add(choicesEntry);
-				else if(isChecked &&currentEntry.Locations[currentLoc].TrueChoices.Contains(choicesEntry)) currentEntry.Locations[currentLoc].TrueChoices.Remove(choicesEntry);
+				if(Quests[currentEnt].Locations[currentLoc].TrueChoices == null) Quests[currentEnt].Locations[currentLoc].TrueChoices=new List<QuestChoicesEntry>();
+				if (!isChecked && !Quests[currentEnt].Locations[currentLoc].TrueChoices.Contains(choicesEntry)) Quests[currentEnt].Locations[currentLoc].TrueChoices.Add(choicesEntry);
+				else if(isChecked &&Quests[currentEnt].Locations[currentLoc].TrueChoices.Contains(choicesEntry)) Quests[currentEnt].Locations[currentLoc].TrueChoices.Remove(choicesEntry);
 			}
 		}
 
 		private void populateChoicesBox() {
 			cblLocationChoices.Items.Clear();
-			if (currentEntry.Locations==null) return;
-			for (int i = 0; i<currentEntry.Locations.Length; i++) {
+			if (Quests[currentEnt].Locations==null) return;
+			for (int i = 0; i<Quests[currentEnt].Locations.Length; i++) {
 				if (i==currentLoc) continue;
-				string name = convertToTitle(currentEntry.Locations[i].Name, currentEntry.Locations[i].Label);
+				string name = convertToTitle(Quests[currentEnt].Locations[i].Name, Quests[currentEnt].Locations[i].Label);
 				cblLocationChoices.Items.Add(name);
-				if (currentEntry.Locations[currentLoc].TrueChoices==null) continue;
-				for (int j = 0; j<currentEntry.Locations[currentLoc].TrueChoices.Count; j++) {
-					if (currentEntry.Locations[i].Label==currentEntry.Locations[currentLoc].TrueChoices[j].Label) {
+				if (Quests[currentEnt].Locations[currentLoc].TrueChoices==null) continue;
+				for (int j = 0; j<Quests[currentEnt].Locations[currentLoc].TrueChoices.Count; j++) {
+					if (Quests[currentEnt].Locations[i].Label==Quests[currentEnt].Locations[currentLoc].TrueChoices[j].Label) {
 						cblLocationChoices.SetItemChecked(cblLocationChoices.Items.IndexOf(name), true);
 					}
 				}
@@ -423,7 +439,7 @@ namespace QuestEditor {
 					currentEvent=0;
 				}
 				cbLocationEvents.Items.Add(s);
-				currentEntry.Locations[currentLoc].addEvent(new Dictionary<string, object>());
+				Quests[currentEnt].Locations[currentLoc].addEvent(new Dictionary<string, object>());
 				cbLocationEvents.SelectedItem=cbLocationEvents.Items[cbLocationEvents.Items.IndexOf(s)];
 			} else {
 				currentEvent=cbLocationEvents.Items.IndexOf(cbLocationEvents.Text)-1;
@@ -481,10 +497,10 @@ namespace QuestEditor {
 				}
 			} catch (KeyNotFoundException) { }
 
-			if (currentEntry.Locations[currentLoc].Events!=null) {
-				currentEntry.Locations[currentLoc].Events[currentEvent]=ev;
+			if (Quests[currentEnt].Locations[currentLoc].Events!=null) {
+				Quests[currentEnt].Locations[currentLoc].Events[currentEvent]=ev;
 			} else {
-				currentEntry.Locations[currentLoc].addEvent(ev);
+				Quests[currentEnt].Locations[currentLoc].addEvent(ev);
 			}
 		}
 
@@ -496,7 +512,7 @@ namespace QuestEditor {
 		}
 
 		private void populateEvent() {
-			if (currentEntry.Locations==null) return;
+			if (Quests[currentEnt].Locations==null) return;
 			if (currentLocation.Events==null) return;
 			if (!currentLocation.Events[currentEvent].ContainsKey("type")) return;
 			string typeLower = currentLocation.Events[currentEvent]["type"].ToString();
@@ -619,8 +635,8 @@ namespace QuestEditor {
 		#endregion
 
 		private void tbLocationDescription_TextChanged(object sender, EventArgs e) {
-			if (currentEntry.Locations!=null) {
-				currentEntry.Locations[currentLoc].Description=tbLocationDescription.Text;
+			if (Quests[currentEnt].Locations!=null) {
+				Quests[currentEnt].Locations[currentLoc].Description=tbLocationDescription.Text;
 			}
 		}
 
@@ -632,7 +648,7 @@ namespace QuestEditor {
 					t.Text=tbQuestLabel.Text;
 				}
 			}
-			currentEntry.Label=tbQuestLabel.Text;
+			Quests[currentEnt].Label=tbQuestLabel.Text;
 			oldQuestName=tbQuestLabel.Text;
 		}
 
@@ -643,10 +659,10 @@ namespace QuestEditor {
 
 		private void QuestTree_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e) {
 			string name = e.Node.ToString().Substring(10);
-			for (int i = 0; i<Quests.Count; i++) {
+			for (int i = 0; i<Quests.Length; i++) {
 				if(Quests[i].Label ==name) {
-					currentEntry=Quests[i];
-					oldQuestName=currentEntry.Label;
+					currentEnt=i;
+					oldQuestName=Quests[currentEnt].Label;
 					pRightPanel.Show();
 					populateRightPanel();
 					break;
@@ -655,7 +671,7 @@ namespace QuestEditor {
 		}
 
 		private void populateRightPanel() {
-			tbQuestLabel.Text=currentEntry.Label;
+			tbQuestLabel.Text=Quests[currentEnt].Label;
 			populateFields();
 			populateChoicesBox();
 			populateEvent();
@@ -667,9 +683,18 @@ namespace QuestEditor {
 		#region ToolBar
 
 		private void btnNewQueset_Click(object sender, EventArgs E) {
-			QuestEntry e = new QuestEntry() { Label="New Quest "+(Quests.Count+1) };
-			Quests.Add(e);
+			QuestEntry e;
+			if (Quests!=null) {
+				e=new QuestEntry() { Label="New Quest "+(Quests.Length+1) };
+			} else {
+				e=new QuestEntry() { Label="New Quest 1" };
+			}
+			addQuest(e);
 			QuestTree.Nodes[0].Nodes.Add(e.Label);
+		}
+
+		private void btnLoadData_Click(object sender, EventArgs e) {
+
 		}
 
 		#endregion

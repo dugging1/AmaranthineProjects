@@ -23,17 +23,25 @@
 		/// the contents of this method with the code editor.
 		/// </summary>
 		private void InitializeComponent() {
-			System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Quests");
+			System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Quests");
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
 			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
 			this.QuestTree = new System.Windows.Forms.TreeView();
+			this.pRightPanel = new System.Windows.Forms.Panel();
+			this.label1 = new System.Windows.Forms.Label();
 			this.btnRemoveLocation = new System.Windows.Forms.Button();
+			this.tbQuestLabel = new System.Windows.Forms.TextBox();
 			this.gbLocation = new System.Windows.Forms.GroupBox();
+			this.cblLocationChoices = new System.Windows.Forms.CheckedListBox();
 			this.btnLocationRemoveEvent = new System.Windows.Forms.Button();
 			this.btnLocationRemoveRequirement = new System.Windows.Forms.Button();
 			this.cbLocationEvents = new System.Windows.Forms.ComboBox();
 			this.label8 = new System.Windows.Forms.Label();
 			this.gbLocationEvents = new System.Windows.Forms.GroupBox();
+			this.cbEvent = new System.Windows.Forms.ComboBox();
+			this.label10 = new System.Windows.Forms.Label();
+			this.flbEventRight = new System.Windows.Forms.FlowLayoutPanel();
+			this.flbEventLeft = new System.Windows.Forms.FlowLayoutPanel();
 			this.gbLocationRequirements = new System.Windows.Forms.GroupBox();
 			this.flbRequirementRight = new System.Windows.Forms.FlowLayoutPanel();
 			this.flbRequirementLeft = new System.Windows.Forms.FlowLayoutPanel();
@@ -48,26 +56,19 @@
 			this.label5 = new System.Windows.Forms.Label();
 			this.label4 = new System.Windows.Forms.Label();
 			this.label3 = new System.Windows.Forms.Label();
-			this.cbQuestLocations = new System.Windows.Forms.ComboBox();
 			this.label2 = new System.Windows.Forms.Label();
-			this.tbQuestLabel = new System.Windows.Forms.TextBox();
-			this.label1 = new System.Windows.Forms.Label();
+			this.cbQuestLocations = new System.Windows.Forms.ComboBox();
 			this.toolStrip1 = new System.Windows.Forms.ToolStrip();
 			this.toolStripSplitButton1 = new System.Windows.Forms.ToolStripSplitButton();
 			this.btnLoadData = new System.Windows.Forms.ToolStripMenuItem();
 			this.btnSaveData = new System.Windows.Forms.ToolStripMenuItem();
 			this.btnNewQueset = new System.Windows.Forms.ToolStripButton();
 			this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
-			this.pRightPanel = new System.Windows.Forms.Panel();
-			this.cblLocationChoices = new System.Windows.Forms.CheckedListBox();
-			this.flbEventLeft = new System.Windows.Forms.FlowLayoutPanel();
-			this.flbEventRight = new System.Windows.Forms.FlowLayoutPanel();
-			this.label10 = new System.Windows.Forms.Label();
-			this.cbEvent = new System.Windows.Forms.ComboBox();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
 			this.splitContainer1.Panel2.SuspendLayout();
 			this.splitContainer1.SuspendLayout();
+			this.pRightPanel.SuspendLayout();
 			this.gbLocation.SuspendLayout();
 			this.gbLocationEvents.SuspendLayout();
 			this.gbLocationRequirements.SuspendLayout();
@@ -75,7 +76,6 @@
 			this.toolStripContainer1.ContentPanel.SuspendLayout();
 			this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
 			this.toolStripContainer1.SuspendLayout();
-			this.pRightPanel.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// splitContainer1
@@ -100,12 +100,35 @@
 			this.QuestTree.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.QuestTree.Location = new System.Drawing.Point(0, 0);
 			this.QuestTree.Name = "QuestTree";
-			treeNode3.Name = "TreeRoot";
-			treeNode3.Text = "Quests";
+			treeNode1.Name = "TreeRoot";
+			treeNode1.Text = "Quests";
 			this.QuestTree.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode3});
+            treeNode1});
 			this.QuestTree.Size = new System.Drawing.Size(232, 764);
 			this.QuestTree.TabIndex = 0;
+			// 
+			// pRightPanel
+			// 
+			this.pRightPanel.Controls.Add(this.label1);
+			this.pRightPanel.Controls.Add(this.btnRemoveLocation);
+			this.pRightPanel.Controls.Add(this.tbQuestLabel);
+			this.pRightPanel.Controls.Add(this.gbLocation);
+			this.pRightPanel.Controls.Add(this.label2);
+			this.pRightPanel.Controls.Add(this.cbQuestLocations);
+			this.pRightPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.pRightPanel.Location = new System.Drawing.Point(0, 0);
+			this.pRightPanel.Name = "pRightPanel";
+			this.pRightPanel.Size = new System.Drawing.Size(807, 764);
+			this.pRightPanel.TabIndex = 1;
+			// 
+			// label1
+			// 
+			this.label1.AutoSize = true;
+			this.label1.Location = new System.Drawing.Point(26, 12);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(64, 13);
+			this.label1.TabIndex = 0;
+			this.label1.Text = "Quest Label";
 			// 
 			// btnRemoveLocation
 			// 
@@ -116,6 +139,14 @@
 			this.btnRemoveLocation.Text = "Remove Location";
 			this.btnRemoveLocation.UseVisualStyleBackColor = true;
 			this.btnRemoveLocation.Click += new System.EventHandler(this.btnRemoveLocation_Click);
+			// 
+			// tbQuestLabel
+			// 
+			this.tbQuestLabel.Location = new System.Drawing.Point(127, 12);
+			this.tbQuestLabel.Name = "tbQuestLabel";
+			this.tbQuestLabel.Size = new System.Drawing.Size(361, 20);
+			this.tbQuestLabel.TabIndex = 1;
+			this.tbQuestLabel.TextChanged += new System.EventHandler(this.tbQuestLabel_TextChanged);
 			// 
 			// gbLocation
 			// 
@@ -141,6 +172,16 @@
 			this.gbLocation.TabIndex = 4;
 			this.gbLocation.TabStop = false;
 			this.gbLocation.Text = "Location";
+			// 
+			// cblLocationChoices
+			// 
+			this.cblLocationChoices.FormattingEnabled = true;
+			this.cblLocationChoices.Location = new System.Drawing.Point(146, 180);
+			this.cblLocationChoices.Name = "cblLocationChoices";
+			this.cblLocationChoices.ScrollAlwaysVisible = true;
+			this.cblLocationChoices.Size = new System.Drawing.Size(361, 94);
+			this.cblLocationChoices.TabIndex = 14;
+			this.cblLocationChoices.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.cblLocationChoices_ItemCheck);
 			// 
 			// btnLocationRemoveEvent
 			// 
@@ -193,6 +234,47 @@
 			this.gbLocationEvents.TabIndex = 10;
 			this.gbLocationEvents.TabStop = false;
 			this.gbLocationEvents.Text = "Event";
+			// 
+			// cbEvent
+			// 
+			this.cbEvent.FormattingEnabled = true;
+			this.cbEvent.Items.AddRange(new object[] {
+            "Add Item",
+            "Remove Item",
+            "Jump",
+            "Add Journal",
+            "Remove Journal",
+            "Add Experience",
+            "Set Flag",
+            "Clear Entry"});
+			this.cbEvent.Location = new System.Drawing.Point(65, 19);
+			this.cbEvent.Name = "cbEvent";
+			this.cbEvent.Size = new System.Drawing.Size(200, 21);
+			this.cbEvent.TabIndex = 3;
+			this.cbEvent.SelectedIndexChanged += new System.EventHandler(this.cbEvent_SelectedIndexChanged);
+			// 
+			// label10
+			// 
+			this.label10.AutoSize = true;
+			this.label10.Location = new System.Drawing.Point(7, 20);
+			this.label10.Name = "label10";
+			this.label10.Size = new System.Drawing.Size(31, 13);
+			this.label10.TabIndex = 2;
+			this.label10.Text = "Type";
+			// 
+			// flbEventRight
+			// 
+			this.flbEventRight.Location = new System.Drawing.Point(125, 44);
+			this.flbEventRight.Name = "flbEventRight";
+			this.flbEventRight.Size = new System.Drawing.Size(140, 237);
+			this.flbEventRight.TabIndex = 1;
+			// 
+			// flbEventLeft
+			// 
+			this.flbEventLeft.Location = new System.Drawing.Point(7, 44);
+			this.flbEventLeft.Name = "flbEventLeft";
+			this.flbEventLeft.Size = new System.Drawing.Size(111, 237);
+			this.flbEventLeft.TabIndex = 0;
 			// 
 			// gbLocationRequirements
 			// 
@@ -326,6 +408,15 @@
 			this.label3.TabIndex = 0;
 			this.label3.Text = "Name (Internal name)";
 			// 
+			// label2
+			// 
+			this.label2.AutoSize = true;
+			this.label2.Location = new System.Drawing.Point(26, 46);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(48, 13);
+			this.label2.TabIndex = 2;
+			this.label2.Text = "Location";
+			// 
 			// cbQuestLocations
 			// 
 			this.cbQuestLocations.FormattingEnabled = true;
@@ -337,32 +428,6 @@
 			this.cbQuestLocations.TabIndex = 3;
 			this.cbQuestLocations.SelectedIndexChanged += new System.EventHandler(this.cbQuestLocations_SelectedIndexChanged);
 			// 
-			// label2
-			// 
-			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(26, 46);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(48, 13);
-			this.label2.TabIndex = 2;
-			this.label2.Text = "Location";
-			// 
-			// tbQuestLabel
-			// 
-			this.tbQuestLabel.Location = new System.Drawing.Point(127, 12);
-			this.tbQuestLabel.Name = "tbQuestLabel";
-			this.tbQuestLabel.Size = new System.Drawing.Size(361, 20);
-			this.tbQuestLabel.TabIndex = 1;
-			this.tbQuestLabel.TextChanged += new System.EventHandler(this.tbQuestLabel_TextChanged);
-			// 
-			// label1
-			// 
-			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(26, 12);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(64, 13);
-			this.label1.TabIndex = 0;
-			this.label1.Text = "Quest Label";
-			// 
 			// toolStrip1
 			// 
 			this.toolStrip1.Dock = System.Windows.Forms.DockStyle.None;
@@ -371,7 +436,7 @@
             this.btnNewQueset});
 			this.toolStrip1.Location = new System.Drawing.Point(3, 0);
 			this.toolStrip1.Name = "toolStrip1";
-			this.toolStrip1.Size = new System.Drawing.Size(122, 25);
+			this.toolStrip1.Size = new System.Drawing.Size(153, 25);
 			this.toolStrip1.TabIndex = 1;
 			this.toolStrip1.Text = "toolStrip1";
 			// 
@@ -392,6 +457,7 @@
 			this.btnLoadData.Name = "btnLoadData";
 			this.btnLoadData.Size = new System.Drawing.Size(161, 22);
 			this.btnLoadData.Text = "Load Quest Data";
+			this.btnLoadData.Click += new System.EventHandler(this.btnLoadData_Click);
 			// 
 			// btnSaveData
 			// 
@@ -427,71 +493,6 @@
 			// 
 			this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.toolStrip1);
 			// 
-			// pRightPanel
-			// 
-			this.pRightPanel.Controls.Add(this.label1);
-			this.pRightPanel.Controls.Add(this.btnRemoveLocation);
-			this.pRightPanel.Controls.Add(this.tbQuestLabel);
-			this.pRightPanel.Controls.Add(this.gbLocation);
-			this.pRightPanel.Controls.Add(this.label2);
-			this.pRightPanel.Controls.Add(this.cbQuestLocations);
-			this.pRightPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.pRightPanel.Location = new System.Drawing.Point(0, 0);
-			this.pRightPanel.Name = "pRightPanel";
-			this.pRightPanel.Size = new System.Drawing.Size(807, 764);
-			this.pRightPanel.TabIndex = 1;
-			// 
-			// cblLocationChoices
-			// 
-			this.cblLocationChoices.FormattingEnabled = true;
-			this.cblLocationChoices.Location = new System.Drawing.Point(146, 180);
-			this.cblLocationChoices.Name = "cblLocationChoices";
-			this.cblLocationChoices.ScrollAlwaysVisible = true;
-			this.cblLocationChoices.Size = new System.Drawing.Size(361, 94);
-			this.cblLocationChoices.TabIndex = 14;
-			this.cblLocationChoices.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.cblLocationChoices_ItemCheck);
-			// 
-			// flbEventLeft
-			// 
-			this.flbEventLeft.Location = new System.Drawing.Point(7, 44);
-			this.flbEventLeft.Name = "flbEventLeft";
-			this.flbEventLeft.Size = new System.Drawing.Size(111, 237);
-			this.flbEventLeft.TabIndex = 0;
-			// 
-			// flbEventRight
-			// 
-			this.flbEventRight.Location = new System.Drawing.Point(125, 44);
-			this.flbEventRight.Name = "flbEventRight";
-			this.flbEventRight.Size = new System.Drawing.Size(140, 237);
-			this.flbEventRight.TabIndex = 1;
-			// 
-			// label10
-			// 
-			this.label10.AutoSize = true;
-			this.label10.Location = new System.Drawing.Point(7, 20);
-			this.label10.Name = "label10";
-			this.label10.Size = new System.Drawing.Size(31, 13);
-			this.label10.TabIndex = 2;
-			this.label10.Text = "Type";
-			// 
-			// cbEvent
-			// 
-			this.cbEvent.FormattingEnabled = true;
-			this.cbEvent.Items.AddRange(new object[] {
-            "Add Item",
-            "Remove Item",
-            "Jump",
-            "Add Journal",
-            "Remove Journal",
-            "Add Experience",
-            "Set Flag",
-            "Clear Entry"});
-			this.cbEvent.Location = new System.Drawing.Point(65, 19);
-			this.cbEvent.Name = "cbEvent";
-			this.cbEvent.Size = new System.Drawing.Size(200, 21);
-			this.cbEvent.TabIndex = 3;
-			this.cbEvent.SelectedIndexChanged += new System.EventHandler(this.cbEvent_SelectedIndexChanged);
-			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -506,6 +507,8 @@
 			this.splitContainer1.Panel2.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
 			this.splitContainer1.ResumeLayout(false);
+			this.pRightPanel.ResumeLayout(false);
+			this.pRightPanel.PerformLayout();
 			this.gbLocation.ResumeLayout(false);
 			this.gbLocation.PerformLayout();
 			this.gbLocationEvents.ResumeLayout(false);
@@ -519,8 +522,6 @@
 			this.toolStripContainer1.TopToolStripPanel.PerformLayout();
 			this.toolStripContainer1.ResumeLayout(false);
 			this.toolStripContainer1.PerformLayout();
-			this.pRightPanel.ResumeLayout(false);
-			this.pRightPanel.PerformLayout();
 			this.ResumeLayout(false);
 
 		}
