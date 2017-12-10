@@ -59,12 +59,17 @@ namespace QuestEditor {
 	}
 
 	internal struct QuestLocationEntry {
+		[JsonProperty(PropertyName = "name")]
 		public string Name { get; set; } //Internal name
+		[JsonProperty(PropertyName = "label")]
 		public string Label { get; set; } //Shown name
+		[JsonProperty(PropertyName = "requirements")]
 		public Dictionary<string,object>[] Requirements { get; set; }
+		[JsonProperty(PropertyName="description")]
 		public string Description { get; set; }
+		[JsonProperty(PropertyName ="events")]
 		public Dictionary<string, object>[] Events { get; set; }
-		[JsonProperty(PropertyName ="Choices")]
+		[JsonProperty(PropertyName ="choices")]
 		public List<QuestChoicesEntry> TrueChoices { get; set; }
 
 		[JsonIgnore()]
@@ -136,9 +141,13 @@ namespace QuestEditor {
 	}
 
 	internal struct QuestChoicesEntry {
+		[JsonProperty(PropertyName = "label")]
 		public string Label { get; set; }
+		[JsonProperty(PropertyName = "description")]
 		public string Description { get; set; }
+		[JsonProperty(PropertyName = "choices")]
 		public List<QuestChoicesEntry> Choices { get; set; }
+		
 		public Dictionary<string, object>[] Requirements { get; set; }
 		public Dictionary<string, object>[] Events { get; set; }
 	}

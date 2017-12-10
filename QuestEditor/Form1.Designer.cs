@@ -64,6 +64,7 @@
 			this.btnSaveData = new System.Windows.Forms.ToolStripMenuItem();
 			this.btnNewQueset = new System.Windows.Forms.ToolStripButton();
 			this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
+			this.btnRemoveQuest = new System.Windows.Forms.ToolStripButton();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
 			this.splitContainer1.Panel2.SuspendLayout();
@@ -433,10 +434,11 @@
 			this.toolStrip1.Dock = System.Windows.Forms.DockStyle.None;
 			this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripSplitButton1,
-            this.btnNewQueset});
+            this.btnNewQueset,
+            this.btnRemoveQuest});
 			this.toolStrip1.Location = new System.Drawing.Point(3, 0);
 			this.toolStrip1.Name = "toolStrip1";
-			this.toolStrip1.Size = new System.Drawing.Size(153, 25);
+			this.toolStrip1.Size = new System.Drawing.Size(274, 25);
 			this.toolStrip1.TabIndex = 1;
 			this.toolStrip1.Text = "toolStrip1";
 			// 
@@ -464,6 +466,7 @@
 			this.btnSaveData.Name = "btnSaveData";
 			this.btnSaveData.Size = new System.Drawing.Size(161, 22);
 			this.btnSaveData.Text = "Save Quest Data";
+			this.btnSaveData.Click += new System.EventHandler(this.btnSaveData_Click);
 			// 
 			// btnNewQueset
 			// 
@@ -492,6 +495,16 @@
 			// toolStripContainer1.TopToolStripPanel
 			// 
 			this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.toolStrip1);
+			// 
+			// btnRemoveQuest
+			// 
+			this.btnRemoveQuest.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+			this.btnRemoveQuest.Image = ((System.Drawing.Image)(resources.GetObject("btnRemoveQuest.Image")));
+			this.btnRemoveQuest.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.btnRemoveQuest.Name = "btnRemoveQuest";
+			this.btnRemoveQuest.Size = new System.Drawing.Size(121, 22);
+			this.btnRemoveQuest.Text = "Delete Current Quest";
+			this.btnRemoveQuest.Click += new System.EventHandler(this.btnRemoveQuest_Click);
 			// 
 			// Form1
 			// 
@@ -567,6 +580,7 @@
 		private System.Windows.Forms.FlowLayoutPanel flbEventLeft;
 		private System.Windows.Forms.ComboBox cbEvent;
 		private System.Windows.Forms.Label label10;
+		private System.Windows.Forms.ToolStripButton btnRemoveQuest;
 	}
 }
 

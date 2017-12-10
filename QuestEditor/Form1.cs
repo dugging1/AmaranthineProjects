@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.IO;
 
 namespace QuestEditor {
 	public partial class Form1 : Form {
@@ -42,7 +43,38 @@ namespace QuestEditor {
 			}
 		}
 		private void removeQuest(int pos) {
-			
+			if (Quests==null) return;
+			string name = "";
+			if (Quests.Length>1) {
+				QuestEntry[] q = new QuestEntry[Quests.Length-1];
+				bool passed = false;
+				for (int i = 0; i<Quests.Length; i++) {
+					if (i==pos) {
+						passed=true;
+						name=Quests[i].Label;
+						continue;
+					} else {
+						if (passed) q[i-1]=Quests[i];
+						else q[i]=Quests[i];
+					}
+				}
+				Quests=q;
+			} else {
+				name=Quests[0].Label;
+				Quests=null;
+				pRightPanel.Hide();
+			}
+			int t=-1;
+			for (int i = 0; i<QuestTree.Nodes[0].Nodes.Count; i++) {
+				if (QuestTree.Nodes[0].Nodes[i].Text==name) {
+					t=i;
+				}
+			}
+			if (t!=-1) QuestTree.Nodes[0].Nodes[t].Remove();
+			currentEnt=0;
+			currentLoc=0;
+			clearRightPanel();
+			pRightPanel.Hide();
 		}
 
 
@@ -52,6 +84,7 @@ namespace QuestEditor {
 
 		private void cbQuestLocations_SelectedIndexChanged(object sender, EventArgs e) {
 			if (cbQuestLocations.Text=="Add new location") {
+				clearRightPanel();
 				tbLocationName.Text="New Quest";
 				Quests[currentEnt].addLocation(new QuestLocationEntry());
 				currentLoc=Quests[currentEnt].Locations.Length-1;
@@ -122,8 +155,13 @@ namespace QuestEditor {
 		}
 		private void updateLocationDDText(string oldStr) {
 			cbQuestLocations.Items.Remove(oldStr);
-			cbQuestLocations.Items.Add(convertToTitle(tbLocationName.Text, tbLocationLabel.Text));
-			cbQuestLocations.SelectedItem=cbQuestLocations.Items[cbQuestLocations.Items.IndexOf(convertToTitle(tbLocationName.Text, tbLocationLabel.Text))];
+			if (Quests[currentEnt].Locations!=null) {
+				cbQuestLocations.Items.Add(convertToTitle(Quests[currentEnt].Locations[currentLoc].Name, Quests[currentEnt].Locations[currentLoc].Label));
+				cbQuestLocations.SelectedItem=cbQuestLocations.Items[cbQuestLocations.Items.IndexOf(convertToTitle(Quests[currentEnt].Locations[currentLoc].Name, Quests[currentEnt].Locations[currentLoc].Label))];
+			} else {
+				cbQuestLocations.Items.Add(convertToTitle(tbLocationName.Text, tbLocationLabel.Text));
+				cbQuestLocations.SelectedItem=cbQuestLocations.Items[cbQuestLocations.Items.IndexOf(convertToTitle(tbLocationName.Text, tbLocationLabel.Text))];
+			}
 		}
 
 		private void btnRemoveLocation_Click(object sender, EventArgs e) {
@@ -150,7 +188,7 @@ namespace QuestEditor {
 			clearRequirement();
 			currentRequirementType=null;
 			cbRequirement.Text="";
-			if (cbLocationRequirements.Text == "Add new requirement") {
+			if (cbLocationRequirements.Text=="Add new requirement") {
 				string s;
 				if (currentLocation.Requirements!=null) {
 					s="Requirement "+(currentLocation.Requirements.Length+1);
@@ -165,22 +203,30 @@ namespace QuestEditor {
 				cbLocationRequirements.SelectedItem=cbLocationRequirements.Items[cbLocationRequirements.Items.IndexOf(s)];
 			} else {
 				currentRequirement=cbLocationRequirements.Items.IndexOf(cbLocationRequirements.Text)-1;
-				populateRequirement();
 				gbLocationRequirements.Show();
+				populateRequirement();
 			}
 		}
 
 		private void populateRequirement() {
 			if (Quests[currentEnt].Locations==null) return;
 			if (Quests[currentEnt].Locations[currentLoc].Requirements==null) return;
+			if (cbLocationRequirements.Items.Count-1!=Quests[currentEnt].Locations[currentLoc].Requirements.Length) {
+				cbLocationRequirements.Items.Clear();
+				cbLocationRequirements.Items.Add("Add new requirement");
+				for (int i = 0; i<Quests[currentEnt].Locations[currentLoc].Requirements.Length; i++) {
+					cbLocationRequirements.Items.Add("Requirement "+(i+1));
+				}
+			}
 			if (!currentLocation.Requirements[currentRequirement].ContainsKey("type")) return;
 			string typeLower = currentLocation.Requirements[currentRequirement]["type"].ToString();
 			string typeUpper;
 			if (typeLower=="journal progress") {
 				typeUpper="Journal Progress";
 			} else {
-				typeUpper = Char.ToUpper(typeLower[0]).ToString()+typeLower.Substring(1);
+				typeUpper=Char.ToUpper(typeLower[0]).ToString()+typeLower.Substring(1);
 			}
+			cbRequirement.SelectedItem=null;
 			cbRequirement.SelectedItem=cbRequirement.Items[cbRequirement.Items.IndexOf(typeUpper)];
 			try {
 				if (typeUpper=="Location") {
@@ -204,7 +250,7 @@ namespace QuestEditor {
 					RequirementControls["Comparison"].Text=compTrans.FirstOrDefault(x => x.Value.ToString()==currentLocation.Requirements[currentRequirement]["comparison"].ToString()).Key.ToString();
 					RequirementControls["Level"].Text=currentLocation.Requirements[currentRequirement]["level"].ToString();
 				}
-			} catch (Exception) {}
+			} catch (Exception) { }
 		}
 
 		private void clearRequirement() {
@@ -350,7 +396,7 @@ namespace QuestEditor {
 					require.Add("comparison", compTrans[((ComboBox)RequirementControls["Comparison"]).SelectedItem.ToString()]);
 					require.Add("level", Convert.ToInt32(((TextBox)RequirementControls["Level"]).Text));
 				}
-			} catch (Exception) {}
+			} catch (Exception) { }
 
 			if (Quests[currentEnt].Locations[currentLoc].Requirements!=null) {
 				Quests[currentEnt].Locations[currentLoc].Requirements[currentRequirement]=require;
@@ -394,9 +440,9 @@ namespace QuestEditor {
 					Events=q.Events
 				};
 				bool isChecked = cblLocationChoices.GetItemChecked(cblLocationChoices.Items.IndexOf(name));
-				if(Quests[currentEnt].Locations[currentLoc].TrueChoices == null) Quests[currentEnt].Locations[currentLoc].TrueChoices=new List<QuestChoicesEntry>();
-				if (!isChecked && !Quests[currentEnt].Locations[currentLoc].TrueChoices.Contains(choicesEntry)) Quests[currentEnt].Locations[currentLoc].TrueChoices.Add(choicesEntry);
-				else if(isChecked &&Quests[currentEnt].Locations[currentLoc].TrueChoices.Contains(choicesEntry)) Quests[currentEnt].Locations[currentLoc].TrueChoices.Remove(choicesEntry);
+				if (Quests[currentEnt].Locations[currentLoc].TrueChoices==null) Quests[currentEnt].Locations[currentLoc].TrueChoices=new List<QuestChoicesEntry>();
+				if (!isChecked&&!Quests[currentEnt].Locations[currentLoc].TrueChoices.Contains(choicesEntry)) Quests[currentEnt].Locations[currentLoc].TrueChoices.Add(choicesEntry);
+				else if (isChecked&&Quests[currentEnt].Locations[currentLoc].TrueChoices.Contains(choicesEntry)) Quests[currentEnt].Locations[currentLoc].TrueChoices.Remove(choicesEntry);
 			}
 		}
 
@@ -514,9 +560,17 @@ namespace QuestEditor {
 		private void populateEvent() {
 			if (Quests[currentEnt].Locations==null) return;
 			if (currentLocation.Events==null) return;
+			if (cbLocationEvents.Items.Count-1!=Quests[currentEnt].Locations[currentLoc].Events.Length) {
+				cbLocationEvents.Items.Clear();
+				cbLocationEvents.Items.Add("Add new event");
+				for (int i = 0; i<Quests[currentEnt].Locations[currentLoc].Events.Length; i++) {
+					cbLocationEvents.Items.Add("Event "+(i+1));
+				}
+			}
 			if (!currentLocation.Events[currentEvent].ContainsKey("type")) return;
 			string typeLower = currentLocation.Events[currentEvent]["type"].ToString();
 			string typeUpper = "";
+			cbEvent.SelectedItem=null;
 			try {
 				switch (typeLower) {
 					case ("add item"):
@@ -569,7 +623,7 @@ namespace QuestEditor {
 						cbEvent.SelectedItem=cbEvent.Items[cbEvent.Items.IndexOf(typeUpper)];
 						break;
 				}
-			} catch (Exception) {}
+			} catch (Exception) { }
 		}
 
 		const int labelHeight = 27;
@@ -578,7 +632,7 @@ namespace QuestEditor {
 			currentEventType=cbEvent.Text;
 			EventControls=new Dictionary<string, Control>();
 			switch (currentEventType) {
-				case("Add Item"):
+				case ("Add Item"):
 				case ("Remove Item"):
 					EventControls.Add("item", new TextBox() { Parent=flbEventRight });
 					EventControls.Add("itemL", new Label() { Parent=flbEventLeft, Text="Item", Size=new Size(100, labelHeight) });
@@ -586,7 +640,7 @@ namespace QuestEditor {
 					EventControls.Add("countL", new Label() { Parent=flbEventLeft, Text="Count", Size=new Size(100, labelHeight) });
 					break;
 				case ("Jump"):
-					EventControls.Add("label", new TextBox() { Parent=flbEventRight});
+					EventControls.Add("label", new TextBox() { Parent=flbEventRight });
 					EventControls.Add("labelL", new Label() { Parent=flbEventLeft, Text="Label", Size=new Size(100, labelHeight) });
 					break;
 				case ("Add Journal"):
@@ -660,22 +714,49 @@ namespace QuestEditor {
 		private void QuestTree_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e) {
 			string name = e.Node.ToString().Substring(10);
 			for (int i = 0; i<Quests.Length; i++) {
-				if(Quests[i].Label ==name) {
+				if (Quests[i].Label==name) {
 					currentEnt=i;
 					oldQuestName=Quests[currentEnt].Label;
 					pRightPanel.Show();
-					populateRightPanel();
 					break;
 				}
 			}
+			clearRightPanel();
+			populateRightPanel();
 		}
 
 		private void populateRightPanel() {
 			tbQuestLabel.Text=Quests[currentEnt].Label;
 			populateFields();
 			populateChoicesBox();
+			if (Quests[currentEnt].Locations!=null&&Quests[currentEnt].Locations[currentLoc].Events!=null) gbLocationEvents.Show();
 			populateEvent();
+			if (Quests[currentEnt].Locations!=null&&Quests[currentEnt].Locations[currentLoc].Requirements!=null) gbLocationRequirements.Show();
 			populateRequirement();
+			if (cbLocationEvents.SelectedItem==null) gbLocationEvents.Hide();
+			if (cbLocationRequirements.SelectedItem==null) gbLocationRequirements.Hide();
+		}
+
+		private void clearRightPanel() {
+			cbQuestLocations.Items.Clear();
+			cbQuestLocations.Items.Add("Add new location");
+			clearEvent();
+			clearRequirement();
+			if (Quests==null) {
+				gbLocation.Hide();
+				return;
+			}
+			if (Quests[currentEnt].Locations==null) gbLocation.Hide();
+			else {
+				if (Quests[currentEnt].Locations[currentLoc].Requirements==null) gbLocationRequirements.Hide();
+				if (Quests[currentEnt].Locations[currentLoc].Events==null) gbLocationEvents.Hide();
+			}
+		}
+
+		private void saveRightPanel() {
+			Quests[currentEnt].Label=tbQuestLabel.Text;
+			saveRequirement();
+			saveEvent();
 		}
 
 		#endregion
@@ -683,6 +764,7 @@ namespace QuestEditor {
 		#region ToolBar
 
 		private void btnNewQueset_Click(object sender, EventArgs E) {
+			clearRightPanel();
 			QuestEntry e;
 			if (Quests!=null) {
 				e=new QuestEntry() { Label="New Quest "+(Quests.Length+1) };
@@ -694,7 +776,40 @@ namespace QuestEditor {
 		}
 
 		private void btnLoadData_Click(object sender, EventArgs e) {
+			OpenFileDialog f = new OpenFileDialog() {
+				DefaultExt="json",
+				AddExtension=true
+			};
+			if (f.ShowDialog()==DialogResult.OK) {
+				Quests=null;
+				TextReader t = new StreamReader(new FileStream(f.FileName, FileMode.Open));
+				string json = t.ReadToEnd();
+				Quests=JsonConvert.DeserializeObject<QuestEntry[]>(json);
+				t.Dispose();
+				QuestTree.Nodes.Clear();
+				QuestTree.Nodes.Add("Quest");
+				foreach (QuestEntry q in Quests) {
+					QuestTree.Nodes[0].Nodes.Add(q.Label);
+				}
+			}
+		}
 
+		private void btnSaveData_Click(object sender, EventArgs e) {
+			saveRightPanel();
+			SaveFileDialog f = new SaveFileDialog() {
+				DefaultExt="json",
+				AddExtension=true
+			};
+			if (f.ShowDialog()==DialogResult.OK) {
+				string json = JsonConvert.SerializeObject(Quests);
+				TextWriter t = new StreamWriter(new FileStream(f.FileName, FileMode.Create));
+				t.Write(json);
+				t.Dispose();
+			}
+		}
+
+		private void btnRemoveQuest_Click(object sender, EventArgs e) {
+			removeQuest(currentEnt);
 		}
 
 		#endregion
